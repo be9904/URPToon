@@ -5,6 +5,7 @@ using UnityEngine.Rendering;
 
 public class PipelineX : RenderPipeline
 {
+    public const string k_ShaderTagName = "PipelineX";
     private PipelineXAsset renderPipelineAsset;
     
     // The constructor has an instance of the ExampleRenderPipelineAsset class as its parameter.
@@ -17,6 +18,18 @@ public class PipelineX : RenderPipeline
         foreach (var camera in cameras)
         {
             context.SetupCameraProperties(camera);
+
+            if (!camera.TryGetCullingParameters(out ScriptableCullingParameters cullParameters))
+                continue;
+
+            var cullingResults = context.Cull(ref cullParameters);
+
+            var unlitShaderTag = new ShaderTagId("XShader");
+
+            var renderSettings = new DrawingSettings(unlitShaderTag, new SortingSettings(camera));
+            var filter = new FilteringSettings(RenderQueueRange.opaque){layerMask = camera.cullingMask};
+            
+            context.DrawRenderers(cullingResults, ref renderSettings, ref filter);
 
             var commandBuffer = new CommandBuffer();
             commandBuffer.ClearRenderTarget(true, true, Color.blue);
