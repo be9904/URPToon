@@ -7,13 +7,13 @@ Shader "Unlit/UnlitShader"
     {
         Tags {
             "RenderType"="Opaque"
-            "RenderPipeline" = "PipelineX"
+            "RenderPipeline" = "UniversalPipeline"
         }
 
         Pass
         {
             Tags {
-                "LightMode" = "XShader"
+                "LightMode" = "UniversalForward"
             }
             HLSLPROGRAM
             #pragma vertex vert
